@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "147549553441",
+    "project_id": "covit-check",
+    "storage_bucket": "covit-check.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147549553441:android:0a848e94dca6960bc8b460",
+        "android_client_info": {
+          "package_name": "com.example.covit_check"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147549553441-mlmp271j8juanghc9s10ptpgm51sdqmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.covit_check",
+            "certificate_hash": "73efaabc0ebbc383ce8d511b92d4891f171e8753"
+          }
+        },
+        {
+          "client_id": "147549553441-g1ld9f6pvp405ajsftth90ua3kak9bql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMZXPbCXNGbc3uGExO67jAMWjNICrN3wE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147549553441-g1ld9f6pvp405ajsftth90ua3kak9bql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
