@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() => {userCredential}),
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Home()),
+                        MaterialPageRoute(builder: (context) => HomePage()),
                       ),
                     },
                   );
