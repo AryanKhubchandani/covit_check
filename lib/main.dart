@@ -20,7 +20,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Find My Buddy',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.grey,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.greenAccent,
+          onPrimary: Colors.white,
+          secondary: Colors.greenAccent,
+          onSecondary: Colors.white,
+        ),
       ),
       home: LoginPage(),
     );
