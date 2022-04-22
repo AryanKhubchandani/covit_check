@@ -74,13 +74,11 @@ class _HomePageState extends State<HomePage> {
       recognitions!.forEach((element) {
         setState(() {
           result = element["label"];
-          if (result == "With Mask") {
+          if (result == "Mask Detected") {
             _startListening();
-            print("I am listening");
           } else {
             _stopListening();
           }
-          // print("CHECK THIS OUT " + result);
         });
       });
     }
@@ -119,14 +117,28 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey[900],
         appBar: AppBar(
-          title: Text("CoVIT Check"),
+          title: const Text("CoVIT Check",
+              style: TextStyle(
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.bold,
+                fontSize: 28,
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
         ),
         body: Column(
           children: [
+            const Text("Please stand in front of the camera",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                )),
             Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height - 240,
                 width: MediaQuery.of(context).size.width,
                 child: !cameraController.value.isInitialized
@@ -137,15 +149,32 @@ class _HomePageState extends State<HomePage> {
                       ),
               ),
             ),
-            Text(result),
-            Text(
-              _speechToText.isListening
-                  ? (_lastWords.isNotEmpty)
-                      ? '$_lastWords'
-                      : 'Please say your registration number'
-                  : _speechEnabled
-                      ? 'Wear Mask'
-                      : 'Speech not available',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(result,
+                  style: TextStyle(
+                    color: (result == "Mask Detected"
+                        ? Colors.greenAccent
+                        : Colors.redAccent),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                _speechToText.isListening
+                    ? ((_lastWords.isNotEmpty)
+                        ? '$_lastWords'
+                        : 'Please say your registration number')
+                    : _speechEnabled
+                        ? 'Please wear your mask'
+                        : 'Speech not available',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
             ),
             // FloatingActionButton(
             //   onPressed: _speechToText.isNotListening
@@ -154,15 +183,31 @@ class _HomePageState extends State<HomePage> {
             //   child: Icon(
             //       _speechToText.isNotListening ? Icons.mic_off : Icons.mic),
             // ),
-            Text(_lastWords.toUpperCase().replaceAll(" ", "")),
+            // Text(_lastWords.toUpperCase().replaceAll(" ", "")),
             if (attendance
                 .containsKey(_lastWords.toUpperCase().replaceAll(" ", ""))) ...[
-              Text(attendance[_lastWords.toUpperCase().replaceAll(" ", "")] +
-                  " is marked present"),
+              Text(
+                attendance[_lastWords.toUpperCase().replaceAll(" ", "")] +
+                    " " +
+                    _lastWords.toUpperCase().replaceAll(" ", "") +
+                    " is marked present",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
             ] else if (_lastWords.isEmpty) ...[
-              Text(""),
+              const Text(""),
             ] else ...[
-              Text("Try Again"),
+              const Text(
+                "Try Again",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
             ],
           ],
         ),

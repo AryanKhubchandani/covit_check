@@ -1,2 +1,2 @@
-Without Mask
-With Mask
+Mask NOT Detected
+Mask Detected
