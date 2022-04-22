@@ -32,6 +32,12 @@ class _HomePageState extends State<HomePage> {
   bool _speechEnabled = false;
   String _lastWords = '';
 
+  Map attendance = {
+    '20BCE0594': 'Aryan Khubchandani',
+    '20BCE0966': 'Sagar Munshi',
+    '19BCE0496': 'Pritisha Nakhwa',
+  };
+
   initCamera() {
     cameraController = CameraController(cameras[1], ResolutionPreset.medium);
     cameraController.initialize().then((value) {
@@ -68,6 +74,12 @@ class _HomePageState extends State<HomePage> {
       recognitions!.forEach((element) {
         setState(() {
           result = element["label"];
+          if (result == "With Mask") {
+            _startListening();
+            print("I am listening");
+          } else {
+            _stopListening();
+          }
           // print("CHECK THIS OUT " + result);
         });
       });
@@ -113,9 +125,9 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               child: Container(
-                height: MediaQuery.of(context).size.height - 220,
+                height: MediaQuery.of(context).size.height - 240,
                 width: MediaQuery.of(context).size.width,
                 child: !cameraController.value.isInitialized
                     ? Container()
@@ -128,28 +140,30 @@ class _HomePageState extends State<HomePage> {
             Text(result),
             Text(
               _speechToText.isListening
-                  ? '$_lastWords'
+                  ? (_lastWords.isNotEmpty)
+                      ? '$_lastWords'
+                      : 'Please say your registration number'
                   : _speechEnabled
-                      ? 'Tap the mic'
+                      ? 'Wear Mask'
                       : 'Speech not available',
             ),
-            FloatingActionButton(
-              onPressed: _speechToText.isNotListening
-                  ? _startListening
-                  : _stopListening,
-              child: Icon(
-                  _speechToText.isNotListening ? Icons.mic_off : Icons.mic),
-            ),
-            // Text(
-            //   (() {
-            //     if (result == "with_mask") {
-            //       return "MASK DETECTED";
-            //     } else {
-            //       return "MASK NOT DETECTED";
-            //     }
-            //   })(),
-            //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            // )
+            // FloatingActionButton(
+            //   onPressed: _speechToText.isNotListening
+            //       ? _startListening
+            //       : _stopListening,
+            //   child: Icon(
+            //       _speechToText.isNotListening ? Icons.mic_off : Icons.mic),
+            // ),
+            Text(_lastWords.toUpperCase().replaceAll(" ", "")),
+            if (attendance
+                .containsKey(_lastWords.toUpperCase().replaceAll(" ", ""))) ...[
+              Text(attendance[_lastWords.toUpperCase().replaceAll(" ", "")] +
+                  " is marked present"),
+            ] else if (_lastWords.isEmpty) ...[
+              Text(""),
+            ] else ...[
+              Text("Try Again"),
+            ],
           ],
         ),
       ),
