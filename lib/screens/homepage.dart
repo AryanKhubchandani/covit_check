@@ -1,13 +1,16 @@
 import 'package:covit_check/main.dart';
 import 'package:covit_check/screens/loginpage.dart';
 import 'package:covit_check/services/auth.dart';
+
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
+
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print("CHECK THIS");
   runApp(HomePage());
 }
 
@@ -25,6 +28,10 @@ class _HomePageState extends State<HomePage> {
   late CameraController cameraController;
   String result = "";
 
+  SpeechToText _speechToText = SpeechToText();
+  bool _speechEnabled = false;
+  String _lastWords = '';
+
   initCamera() {
     cameraController = CameraController(cameras[1], ResolutionPreset.medium);
     cameraController.initialize().then((value) {
@@ -40,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   loadModel() async {
     await Tflite.loadModel(
-        model: "assets/models/model.tflite",
+        model: "assets/models/model_unquant.tflite",
         labels: "assets/models/labels.txt");
   }
 
@@ -61,7 +68,7 @@ class _HomePageState extends State<HomePage> {
       recognitions!.forEach((element) {
         setState(() {
           result = element["label"];
-          print(result);
+          // print("CHECK THIS OUT " + result);
         });
       });
     }
@@ -72,6 +79,28 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     initCamera();
     loadModel();
+    _initSpeech();
+  }
+
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
   }
 
   @override
@@ -86,7 +115,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Container(
-                height: MediaQuery.of(context).size.height - 180,
+                height: MediaQuery.of(context).size.height - 220,
                 width: MediaQuery.of(context).size.width,
                 child: !cameraController.value.isInitialized
                     ? Container()
@@ -98,15 +127,29 @@ class _HomePageState extends State<HomePage> {
             ),
             Text(result),
             Text(
-              (() {
-                if (result == "with_mask") {
-                  return "MASK DETECTED";
-                } else {
-                  return "MASK NOT DETECTED";
-                }
-              })(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            )
+              _speechToText.isListening
+                  ? '$_lastWords'
+                  : _speechEnabled
+                      ? 'Tap the mic'
+                      : 'Speech not available',
+            ),
+            FloatingActionButton(
+              onPressed: _speechToText.isNotListening
+                  ? _startListening
+                  : _stopListening,
+              child: Icon(
+                  _speechToText.isNotListening ? Icons.mic_off : Icons.mic),
+            ),
+            // Text(
+            //   (() {
+            //     if (result == "with_mask") {
+            //       return "MASK DETECTED";
+            //     } else {
+            //       return "MASK NOT DETECTED";
+            //     }
+            //   })(),
+            //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            // )
           ],
         ),
       ),
